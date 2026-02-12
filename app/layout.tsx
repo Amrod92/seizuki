@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -12,6 +13,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className="dark">
       <body className="font-ui antialiased">
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
