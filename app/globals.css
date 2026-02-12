@@ -1,26 +1,293 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-ink: var(--ink);
+  --color-charcoal: var(--charcoal);
+  --color-rice: var(--rice);
+  --color-sakura: var(--sakura);
+  --color-crimson: var(--crimson);
+  --color-twilight: var(--twilight);
+  --color-border-subtle: var(--border-subtle);
+  --color-divider-light: var(--divider-light);
+  --color-muted-dark: var(--muted-dark);
+  --color-muted-light: var(--muted-light);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --font-brand: var(--font-yomogi), cursive;
+  --font-ui: var(--font-zen-maru-gothic), sans-serif;
+  --font-sans: var(--font-ui);
   --font-mono: var(--font-geist-mono);
+  --text-h1: var(--size-h1);
+  --text-h1--line-height: 1.1;
+  --text-h2: var(--size-h2);
+  --text-h2--line-height: 1.2;
+  --text-h3: var(--size-h3);
+  --text-h3--line-height: 1.3;
+  --text-h4: var(--size-h4);
+  --text-h4--line-height: 1.3;
+  --text-bodylg: var(--size-bodylg);
+  --text-bodylg--line-height: 1.6;
+  --text-body: var(--size-body);
+  --text-body--line-height: 1.6;
+  --text-small: var(--size-small);
+  --text-small--line-height: 1.4;
+  --text-micro: var(--size-micro);
+  --text-micro--line-height: 1.4;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  color-scheme: light;
+  --font-yomogi: "Yomogi", "Comic Sans MS", cursive;
+  --font-zen-maru-gothic: "Zen Maru Gothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --ink: #111111;
+  --charcoal: #1c1c1e;
+  --rice: #f5f4f0;
+  --sakura: #e94e77;
+  --crimson: #b11226;
+  --twilight: #6c5ce7;
+  --border-subtle: #2a2a2d;
+  --divider-light: #e5e5e5;
+  --muted-dark: #a1a1aa;
+  --muted-light: #6b7280;
+
+  --background: var(--rice);
+  --foreground: var(--ink);
+  --card: #fffefb;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--sakura);
+  --primary-foreground: #ffffff;
+  --secondary: #ebe8e1;
+  --secondary-foreground: var(--ink);
+  --muted: #ece9e2;
+  --muted-foreground: var(--muted-light);
+  --accent: #e9e7ff;
+  --accent-foreground: #352f78;
+  --destructive: var(--crimson);
+  --border: var(--divider-light);
+  --input: var(--divider-light);
+  --ring: var(--sakura);
+  --chart-1: var(--sakura);
+  --chart-2: var(--twilight);
+  --chart-3: var(--crimson);
+  --chart-4: var(--border-subtle);
+  --chart-5: var(--muted-light);
+  --radius: 0.875rem;
+  --sidebar: #fffdf8;
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--sakura);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #efeaff;
+  --sidebar-accent-foreground: #352f78;
+  --sidebar-border: var(--divider-light);
+  --sidebar-ring: var(--sakura);
+  --surface-1: #ffffffcc;
+  --surface-2: #f8f6f1;
+  --bg-glow-1: rgba(233, 78, 119, 0.08);
+  --bg-glow-2: rgba(108, 92, 231, 0.06);
+  --size-h1: 48px;
+  --size-h2: 36px;
+  --size-h3: 24px;
+  --size-h4: 20px;
+  --size-bodylg: 18px;
+  --size-body: 16px;
+  --size-small: 14px;
+  --size-micro: 12px;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: var(--ink);
+  --foreground: var(--rice);
+  --card: var(--charcoal);
+  --card-foreground: var(--rice);
+  --popover: #202024;
+  --popover-foreground: var(--rice);
+  --primary: var(--sakura);
+  --primary-foreground: #ffffff;
+  --secondary: #252528;
+  --secondary-foreground: var(--rice);
+  --muted: #232326;
+  --muted-foreground: var(--muted-dark);
+  --accent: #242039;
+  --accent-foreground: #d8d2ff;
+  --destructive: var(--crimson);
+  --border: var(--border-subtle);
+  --input: var(--border-subtle);
+  --ring: var(--sakura);
+  --chart-1: var(--sakura);
+  --chart-2: var(--twilight);
+  --chart-3: var(--crimson);
+  --chart-4: #f0efe8;
+  --chart-5: var(--muted-dark);
+  --sidebar: var(--charcoal);
+  --sidebar-foreground: var(--rice);
+  --sidebar-primary: var(--sakura);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #242039;
+  --sidebar-accent-foreground: #d8d2ff;
+  --sidebar-border: var(--border-subtle);
+  --sidebar-ring: var(--sakura);
+  --surface-1: #1f1f22cc;
+  --surface-2: #19191b;
+  --bg-glow-1: rgba(233, 78, 119, 0.18);
+  --bg-glow-2: rgba(108, 92, 231, 0.16);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-body text-foreground font-ui;
+    background-image:
+      radial-gradient(900px circle at 12% -10%, var(--bg-glow-1), transparent 45%),
+      radial-gradient(700px circle at 88% 0%, var(--bg-glow-2), transparent 40%),
+      linear-gradient(180deg, var(--surface-2) 0%, var(--background) 35%, var(--background) 100%);
+    background-attachment: fixed;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .ink-panel {
+    @apply border border-border bg-card/90 backdrop-blur-sm;
+    box-shadow: 0 20px 70px -45px rgba(0, 0, 0, 0.95);
+  }
+
+  .type-h1 {
+    @apply font-brand text-h1 font-normal;
+  }
+
+  .type-h2 {
+    @apply font-brand text-h2 font-normal;
+  }
+
+  .type-h2-ui {
+    @apply font-ui text-h2 font-semibold;
+  }
+
+  .type-h3 {
+    @apply font-ui text-h3 font-semibold;
+  }
+
+  .type-h4 {
+    @apply font-ui text-h4 font-semibold;
+  }
+
+  .type-bodylg {
+    @apply font-ui text-bodylg;
+  }
+
+  .type-body {
+    @apply font-ui text-body;
+  }
+
+  .type-small {
+    @apply font-ui text-small;
+  }
+
+  .type-micro {
+    @apply font-ui text-micro;
+  }
+
+  .overlay-comment {
+    animation: overlay-comment-slide 5s ease-out forwards;
+  }
+
+  .overlay-emoji {
+    animation: overlay-emoji-float 2.4s ease-out forwards;
+  }
+}
+
+@keyframes overlay-comment-slide {
+  0% {
+    opacity: 0;
+    transform: translateX(48px) scale(0.92);
+  }
+  12% {
+    opacity: 1;
+    transform: translateX(0) scale(1.02);
+  }
+  20% {
+    transform: translateX(0) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-24px) scale(0.96);
+  }
+}
+
+@keyframes overlay-emoji-float {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.9);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-12px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-82px) scale(1.05);
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --size-h1: 36px;
+    --size-h2: 28px;
+    --size-h3: 20px;
+    --size-h4: 20px;
+    --size-bodylg: 16px;
+    --size-body: 16px;
+    --size-small: 13px;
+    --size-micro: 13px;
+  }
 }

@@ -1,65 +1,167 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { MangaCard } from "@/components/manga-card";
+import { SiteShell } from "@/components/site-shell";
+import { HOME_TABS } from "@/lib/constants";
+import { getCreatorStats, getHomeFeed, listCreators } from "@/lib/api";
+import { compactNumber, timeAgo } from "@/lib/format";
+import { HomeFeedType } from "@/lib/types";
+
+const genres = [
+  "Action",
+  "Romance",
+  "Horror",
+  "Slice of Life",
+  "Drama",
+  "Fantasy",
+  "Sci-Fi",
+  "Comedy",
+  "Webtoon",
+];
+
+export default function HomePage() {
+  const [activeTab, setActiveTab] = useState<HomeFeedType>("TRENDING");
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+
+  const feed = useMemo(() => getHomeFeed(activeTab), [activeTab]);
+  const creators = useMemo(() => listCreators().slice(0, 4), []);
+  const filteredFeed = selectedGenre
+    ? feed.filter((item) => item.title.toLowerCase().includes(selectedGenre.toLowerCase()) || selectedGenre === "Action")
+    : feed;
+
+  const recentlyUpdated = useMemo(() => getHomeFeed("NEW").slice(0, 6), []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <SiteShell>
+      <section className="space-y-4">
+        <p className="type-small text-muted-foreground">Community-First Discovery</p>
+        <h1 className="type-h1 text-rice">Discover Feed</h1>
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+          {HOME_TABS.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={`type-small rounded-xl px-3 py-2 transition-colors ${
+                activeTab === tab
+                  ? "bg-sakura text-white"
+                  : "border border-border-subtle bg-charcoal/70 text-muted-dark hover:border-sakura/70 hover:text-rice"
+              }`}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              {tab.replaceAll("_", " ")}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {filteredFeed.map((item) => (
+            <MangaCard key={item.chapterId} item={item} />
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <div>
+          <h2 className="type-h2 text-rice">Rising Creators</h2>
+          <p className="type-small mt-1 text-muted-foreground">Follow creators with the fastest engagement growth.</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {creators.map((creator) => {
+            const stats = getCreatorStats(creator._id);
+            return (
+              <article key={creator._id} className="ink-panel flex items-center gap-4 rounded-2xl p-4">
+                <img src={creator.avatarUrl} alt={creator.username} className="h-12 w-12 rounded-full object-cover" />
+                <div className="min-w-0 flex-1">
+                  <p className="type-h4 truncate text-rice">@{creator.username}</p>
+                  <p className="type-small text-muted-foreground">{compactNumber(stats.followers)} followers</p>
+                  <p className="type-small mt-1 text-muted-dark">{compactNumber(stats.reads)} reads</p>
+                </div>
+                <Link
+                  href={`/creator/${creator._id}`}
+                  className="type-small rounded-xl bg-sakura px-3 py-2 font-semibold text-white transition-colors hover:bg-sakura/90"
+                >
+                  View
+                </Link>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="type-h2 text-rice">Genre chips</h2>
+        <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
+          {genres.map((genre) => (
+            <button
+              key={genre}
+              type="button"
+              onClick={() => setSelectedGenre((current) => (current === genre ? null : genre))}
+              className={`type-body rounded-xl border px-4 py-2 transition-all ${
+                selectedGenre === genre
+                  ? "border-sakura bg-sakura/15 text-sakura"
+                  : "border-border-subtle bg-charcoal/60 text-rice hover:border-sakura/70 hover:text-sakura"
+              }`}
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              {genre}
+            </button>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="type-h2 text-rice">Community Picks</h2>
+          <span className="type-small rounded-full border border-sakura/60 bg-sakura/15 px-3 py-1 text-sakura">
+            Voted by readers
+          </span>
         </div>
-      </main>
-    </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {getHomeFeed("MOST_DISCUSSED")
+            .slice(0, 3)
+            .map((item) => (
+              <article key={`pick-${item.chapterId}`} className="ink-panel rounded-2xl p-4">
+                <img src={item.coverUrl} alt={item.title} className="mb-3 aspect-[2/3] w-full rounded-xl object-cover" />
+                <h3 className="type-h4 text-rice">{item.title}</h3>
+                <p className="type-small text-muted-foreground">by @{item.creatorName}</p>
+                <p className="type-small mt-3 text-sakura">{compactNumber(item.commentCount)} comments this week</p>
+              </article>
+            ))}
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="type-h2 text-rice">Recently Updated</h2>
+        <div className="ink-panel rounded-2xl p-5">
+          <ul className="space-y-2">
+            {recentlyUpdated.map((item) => (
+              <li key={`recent-${item.chapterId}`} className="type-body flex items-center justify-between gap-3 text-rice">
+                <Link href={`/chapter/${item.chapterId}`} className="hover:text-sakura">
+                  {item.title}
+                </Link>
+                <span className="type-small text-muted-dark">{timeAgo(item.updatedAt)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="ink-panel relative overflow-hidden rounded-3xl p-7 sm:p-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-sakura/10 via-transparent to-twilight/15" />
+        <div className="relative flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="type-h2 text-rice">Have a story inside you?</h2>
+            <p className="type-body mt-2 max-w-xl text-muted-dark">Create a series and publish your first chapter today.</p>
+          </div>
+          <Link
+            href="/create/series"
+            className="type-body rounded-2xl bg-sakura px-6 py-3 font-semibold text-white transition-colors hover:bg-sakura/90"
+          >
+            Become a Creator
+          </Link>
+        </div>
+      </section>
+    </SiteShell>
   );
 }
